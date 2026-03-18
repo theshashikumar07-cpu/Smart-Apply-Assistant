@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Apply Assistant</title>
+  <title>Hirely</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
     :root {
       --bg1: #eef6ff;
       --bg2: #fff7ed;
-      --card: rgba(255,255,255,0.92);
+      --card: rgba(255,255,255,0.94);
       --text: #172033;
       --muted: #5f6b84;
       --primary: #2563eb;
@@ -20,12 +20,9 @@
       --accent: #0ea5a4;
       --warm: #f59e0b;
       --border: rgba(148,163,184,0.28);
-      --success: #ecfdf5;
       --shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: 'Inter', Arial, Helvetica, sans-serif;
@@ -37,462 +34,149 @@
         linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height: 100vh;
     }
-
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 28px;
+    .container { max-width: 1180px; margin: 0 auto; padding: 28px; }
+    .hero { text-align: center; padding: 34px 20px 18px; }
+    .hero h1 { margin: 0 0 8px; font-size: 2.8rem; font-weight: 800; letter-spacing: -0.04em; }
+    .hero p { margin: 0 auto; max-width: 760px; color: var(--muted); }
+    .stepper {
+      display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 18px 0 26px;
     }
-
-    .hero {
-      text-align: center;
-      padding: 38px 20px 24px;
+    .step-pill {
+      padding: 10px 14px; border-radius: 999px; background: rgba(255,255,255,0.84); border: 1px solid var(--border);
+      font-size: 0.9rem; font-weight: 700; color: var(--muted);
     }
-
-    .badge-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .badge {
-      background: rgba(255,255,255,0.8);
-      color: var(--primary-dark);
-      padding: 9px 14px;
-      border-radius: 999px;
-      font-size: 0.86rem;
-      font-weight: 800;
-      border: 1px solid rgba(37,99,235,0.12);
-      box-shadow: 0 6px 16px rgba(37,99,235,0.08);
-    }
-
-    .hero h1 {
-      margin: 0 0 10px;
-      font-size: 2.7rem;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
-
-    .hero p {
-      margin: 0 auto;
-      max-width: 780px;
-      color: var(--muted);
-      font-size: 1.02rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1.02fr 0.98fr;
-      gap: 22px;
-      align-items: start;
-    }
-
+    .step-pill.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; border-color: transparent; }
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 22px; box-shadow: var(--shadow); backdrop-filter: blur(10px);
     }
-
-    .card h2 {
-      margin: 0 0 16px;
-      font-size: 1.3rem;
-    }
-
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .field {
-      margin-bottom: 14px;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-title { margin: 0 0 14px; font-size: 1.35rem; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { margin-bottom: 14px; }
+    .full { grid-column: 1 / -1; }
+    label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
     input, select, textarea {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1px solid rgba(148,163,184,0.34);
-      border-radius: 14px;
-      font-size: 0.95rem;
-      background: rgba(255,255,255,0.95);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+      width: 100%; padding: 13px 14px; border: 1px solid rgba(148,163,184,0.34); border-radius: 14px; font-size: 0.95rem;
+      background: rgba(255,255,255,0.95); color: var(--text); outline: none;
     }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: rgba(37,99,235,0.5);
-      box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
-      transform: translateY(-1px);
+    textarea { min-height: 110px; resize: vertical; }
+    .btn-row, .nav-row, .action-row, .job-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    button, .btn-link {
+      border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 13px 18px; border-radius: 14px;
+      font-size: 0.95rem; font-weight: 800; cursor: pointer; text-decoration: none;
     }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    .btn-row, .action-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    button {
-      border: none;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 13px 18px;
-      border-radius: 14px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 12px 24px rgba(99,102,241,0.18);
-      transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 28px rgba(99,102,241,0.22);
-    }
-
-    .secondary {
-      background: linear-gradient(135deg, var(--accent), var(--primary));
-    }
-
-    .outline-btn {
-      background: rgba(255,255,255,0.95);
-      color: var(--primary-dark);
-      border: 1px solid rgba(37,99,235,0.18);
-      box-shadow: none;
-    }
-
-    .outline-btn:hover {
-      background: #ffffff;
-    }
-
-    .whatsapp-btn {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff;
-    }
-
-    .output-box {
-      background: rgba(255,255,255,0.88);
-      border: 1px solid rgba(148,163,184,0.28);
-      border-radius: 18px;
-      padding: 18px;
-      white-space: pre-wrap;
-      min-height: 420px;
-      font-size: 0.96rem;
-      overflow-wrap: anywhere;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-    }
-
+    .secondary-btn { background: linear-gradient(135deg, var(--accent), var(--primary)); }
+    .outline-btn { background: rgba(255,255,255,0.96); color: var(--primary-dark); border: 1px solid rgba(37,99,235,0.18); }
+    .whatsapp-btn { background: linear-gradient(135deg, #22c55e, #16a34a); }
     .resume-preview {
-      background: #fff;
-      border: 1px solid rgba(148,163,184,0.25);
-      border-radius: 18px;
-      padding: 26px;
-      min-height: 420px;
-      box-shadow: 0 12px 28px rgba(15,23,42,0.06);
+      width: 100%; max-width: 794px; min-height: 1123px; margin: 10px auto 0; background: #fff; border: 1px solid rgba(148,163,184,0.25);
+      border-radius: 18px; padding: 26px; box-shadow: 0 12px 28px rgba(15,23,42,0.06);
     }
-
-    .a4-preview {
-      width: 100%;
-      max-width: 794px;
-      min-height: 1123px;
-      margin: 0 auto;
-      background: #ffffff;
+    .resume-head { border-bottom: 2px solid #dbeafe; padding-bottom: 14px; margin-bottom: 16px; }
+    .resume-name { font-size: 1.9rem; font-weight: 800; margin: 0 0 6px; color: #0f172a; }
+    .resume-contact, .muted { color: var(--muted); font-size: 0.94rem; }
+    .resume-section { margin-top: 18px; }
+    .resume-section h3 { margin: 0 0 8px; font-size: 1rem; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.06em; }
+    .resume-section p, .resume-section li { font-size: 0.95rem; color: #243047; }
+    .resume-section ul { margin: 0; padding-left: 18px; }
+    .job-links { display: grid; gap: 12px; margin-top: 14px; }
+    .job-link { border: 1px solid rgba(148,163,184,0.25); border-radius: 16px; padding: 15px; background: rgba(255,255,255,0.96); }
+    .job-link strong { display: block; margin-bottom: 6px; }
+    .job-meta, .job-desc, .job-url { display: block; color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
+    .apply-tag { display: inline-block; background: linear-gradient(135deg, var(--warm), #f97316); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+    .payment-box {
+      max-width: 720px; margin: 10px auto 0; padding: 22px; background: #fff; border-radius: 18px; border: 1px solid rgba(148,163,184,0.25);
     }
-
-    .resume-head {
-      border-bottom: 2px solid #dbeafe;
-      padding-bottom: 14px;
-      margin-bottom: 16px;
-    }
-
-    .resume-name {
-      font-size: 1.9rem;
-      font-weight: 800;
-      margin: 0 0 6px;
-      color: #0f172a;
-    }
-
-    .resume-contact {
-      color: var(--muted);
-      font-size: 0.94rem;
-    }
-
-    .resume-section {
-      margin-top: 18px;
-    }
-
-    .resume-section h3 {
-      margin: 0 0 8px;
-      font-size: 1rem;
-      color: var(--primary-dark);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .resume-section p, .resume-section li {
-      font-size: 0.95rem;
-      color: #243047;
-    }
-
-    .resume-section ul {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    .job-links {
-      display: grid;
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    .job-link {
-      border: 1px solid rgba(148,163,184,0.25);
-      border-radius: 16px;
-      padding: 15px;
-      background: rgba(255,255,255,0.96);
-      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
-    }
-
-    .job-link strong {
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .job-meta,
-    .job-desc,
-    .job-url {
-      display: block;
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-top: 4px;
-    }
-
-    .job-actions {
-      margin-top: 12px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .apply-tag {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--warm), #f97316);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .apply-tag:hover {
-      opacity: 0.92;
-    }
-
-    .plain-link {
-      display: inline-block;
-      color: var(--primary-dark);
-      text-decoration: underline;
-      font-size: 0.9rem;
-      word-break: break-all;
-    }
-
-    .tip {
-      background: linear-gradient(135deg, #eff6ff, #ecfeff);
-      border: 1px solid #bfdbfe;
-      border-radius: 14px;
-      padding: 13px 14px;
-      font-size: 0.92rem;
-      margin-top: 14px;
-      color: #1e3a8a;
-    }
-
-    .small {
-      color: var(--muted);
-      font-size: 0.86rem;
-      margin-top: 10px;
-    }
-
+    .price { font-size: 2rem; font-weight: 800; color: var(--primary-dark); margin: 8px 0 18px; }
+    .small { color: var(--muted); font-size: 0.88rem; }
     @media (max-width: 960px) {
-      .grid { grid-template-columns: 1fr; }
       .field-grid { grid-template-columns: 1fr; }
       .hero h1 { font-size: 2rem; }
-      .a4-preview { min-height: auto; }
+      .resume-preview { min-height: auto; }
     }
-
     @media print {
-      body {
-        background: #fff;
-      }
-      .hero, .card:first-child, .job-links, .tip {
-        display: none !important;
-      }
-      .grid {
-        display: block;
-      }
-      .card {
-        box-shadow: none;
-        border: none;
-        padding: 0;
-        background: #fff;
-      }
-      .a4-preview {
-        max-width: 100%;
-        min-height: auto;
-        box-shadow: none;
-        border: none;
-        margin: 0;
-        padding: 0;
-      }
-      @page {
-        size: A4;
-        margin: 12mm;
-      }
-    }
-      .field-grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 2rem; }
+      body { background: #fff; }
+      .hero, .stepper, .nav-row, .btn-row, .action-row, .job-links, .payment-box { display: none !important; }
+      .card { box-shadow: none; border: none; padding: 0; background: #fff; }
+      .page { display: none !important; }
+      #page2 { display: block !important; }
+      .resume-preview { max-width: 100%; min-height: auto; box-shadow: none; border: none; margin: 0; padding: 0; }
+      @page { size: A4; margin: 12mm; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <section class="hero">
-      <div class="badge-row">
-        <span class="badge">UK + India</span>
-        <span class="badge">Live CV</span>
-        <span class="badge">PDF Download</span>
-        <span class="badge">WhatsApp Share</span>
-      </div>
-      <h1>Smart Apply Assistant</h1>
-      <p>Build a proper resume instantly, download it as PDF, generate a job email, and share your profile through WhatsApp from one clean page.</p>
+      <h1>Hirely</h1>
+      <p>Create your resume in steps, review it clearly, explore job links, and pay only at the final stage.</p>
     </section>
 
-    <div class="grid">
-      <section class="card">
-        <h2>Your Details</h2>
+    <div class="stepper">
+      <div class="step-pill active" id="step-pill-1">1. Details</div>
+      <div class="step-pill" id="step-pill-2">2. Resume & Email</div>
+      <div class="step-pill" id="step-pill-3">3. Jobs & Payment</div>
+    </div>
 
+    <div class="card">
+      <section class="page active" id="page1">
+        <h2 class="page-title">Enter Your Details</h2>
         <div class="field-grid">
-          <div class="field">
-            <label for="fullName">Full Name</label>
-            <input id="fullName" type="text" placeholder="Enter full name" />
-          </div>
-
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" type="email" placeholder="Enter email" />
-          </div>
-
-          <div class="field">
-            <label for="country">Country</label>
-            <select id="country" onchange="updateStateOptions()">
-              <option value="UK">UK</option>
-              <option value="India">India</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="phone">Phone Number</label>
-            <input id="phone" type="text" placeholder="Phone number" />
-          </div>
-
-          <div class="field">
-            <label for="location">State / Region</label>
-            <select id="location" onchange="updateCityOptions()"></select>
-          </div>
-
-          <div class="field">
-            <label for="city">City</label>
-            <select id="city"></select>
-          </div>
-
-          <div class="field full">
-            <label for="course">Course / Education</label>
-            <input id="course" type="text" placeholder="Course or education" />
-          </div>
-
-          <div class="field">
-            <label for="jobType">Target Job Type</label>
-            <select id="jobType">
-              <option value="Warehouse Operative">Warehouse Operative</option>
-              <option value="Retail Assistant">Retail Assistant</option>
-              <option value="Kitchen Assistant">Kitchen Assistant</option>
-              <option value="HR Executive">HR Executive</option>
-              <option value="Business Analyst">Business Analyst</option>
-              <option value="Data Analyst">Data Analyst</option>
-              <option value="Software Engineer">Software Engineer</option>
-              <option value="Project Manager">Project Manager</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="availability">Availability</label>
-            <select id="availability">
-              <option value="Part-time">Part-time</option>
-              <option value="Full-time">Full-time</option>
-              <option value="Evenings">Evenings</option>
-              <option value="Weekends">Weekends</option>
-              <option value="Flexible">Flexible</option>
-            </select>
-          </div>
-
-          <div class="field full">
-            <label for="experience">Experience / Strengths</label>
-            <textarea id="experience" placeholder="If you have experience, write it here. If not, leave it blank and the resume will show strengths only."></textarea>
-          </div>
+          <div class="field"><label for="fullName">Full Name</label><input id="fullName" type="text" placeholder="Enter full name" /></div>
+          <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="Enter email" /></div>
+          <div class="field"><label for="country">Country</label><select id="country" onchange="updateStateOptions()"><option value="UK">UK</option><option value="India">India</option></select></div>
+          <div class="field"><label for="phone">Phone Number</label><input id="phone" type="text" placeholder="Phone number" /></div>
+          <div class="field"><label for="location">State / Region</label><select id="location" onchange="updateCityOptions()"></select></div>
+          <div class="field"><label for="city">City</label><select id="city"></select></div>
+          <div class="field full"><label for="course">Course / Education</label><input id="course" type="text" placeholder="Course or education" /></div>
+          <div class="field"><label for="jobType">Target Job Type</label><select id="jobType"><option value="Warehouse Operative">Warehouse Operative</option><option value="Retail Assistant">Retail Assistant</option><option value="Kitchen Assistant">Kitchen Assistant</option><option value="HR Executive">HR Executive</option><option value="Business Analyst">Business Analyst</option><option value="Data Analyst">Data Analyst</option><option value="Software Engineer">Software Engineer</option><option value="Project Manager">Project Manager</option></select></div>
+          <div class="field"><label for="availability">Availability</label><select id="availability"><option value="Part-time">Part-time</option><option value="Full-time">Full-time</option><option value="Evenings">Evenings</option><option value="Weekends">Weekends</option><option value="Flexible">Flexible</option></select></div>
+          <div class="field full"><label for="experience">Experience / Strengths</label><textarea id="experience" placeholder="If you have experience, write it here. If not, leave it blank and the resume will show strengths only."></textarea></div>
         </div>
-
-        <div class="btn-row">
-          <button onclick="generateCV()">Generate CV</button>
-          <button onclick="generateEmail()">Generate Email</button>
-          <button class="secondary" onclick="generateJobLinks()">Show Job Links</button>
-        </div>
-
-        <div class="action-row">
-          <button class="outline-btn" onclick="downloadPDF()">Download PDF</button>
-          <button class="whatsapp-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+        <div class="nav-row">
+          <button onclick="goToStep(2); generateCV();">Continue to Resume</button>
           <button class="outline-btn" onclick="resetForm()">Reset Form</button>
         </div>
-
-        <p class="small">Download PDF opens a print-friendly A4 version so the user can save it as a single-page PDF when possible. WhatsApp share uses the user's own share flow, not any fixed number.</p>
       </section>
 
-      <section class="card">
-        <h2>Resume / Output</h2>
-        <div id="output" class="resume-preview a4-preview">
+      <section class="page" id="page2">
+        <h2 class="page-title">Review Resume and Email</h2>
+        <div class="btn-row">
+          <button onclick="generateCV()">Generate CV</button>
+          <button class="secondary-btn" onclick="generateEmail()">Generate Email</button>
+          <button class="outline-btn" onclick="downloadPDF()">Download PDF</button>
+          <button class="whatsapp-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+        </div>
+        <div id="output" class="resume-preview">
           <div class="resume-head">
             <h1 class="resume-name">Your Name</h1>
             <div class="resume-contact">Phone • Email • City, State, Country</div>
           </div>
-          <div class="resume-section">
-            <h3>Profile</h3>
-            <p>Your resume will appear here after you click Generate CV.</p>
-          </div>
+          <div class="resume-section"><h3>Profile</h3><p>Your resume will appear here after you click Generate CV.</p></div>
         </div>
+        <div class="nav-row">
+          <button class="outline-btn" onclick="goToStep(1)">Back</button>
+          <button onclick="goToStep(3); generateJobLinks();">Continue to Jobs</button>
+        </div>
+      </section>
+
+      <section class="page" id="page3">
+        <h2 class="page-title">Job Links and Payment</h2>
+        <div id="jobSummary" class="muted">Job results will appear below.</div>
         <div id="links" class="job-links"></div>
-        <div class="tip">
-          Resume preview is now styled like an A4 page. Use Download PDF, then choose <strong>Save as PDF</strong> in the print window.
+        <div class="payment-box">
+          <div class="muted">Final Step</div>
+          <div class="price">£3</div>
+          <p>Pay after reviewing your resume and job links. This page is where payment details should appear last.</p>
+          <div class="action-row">
+            <button>Pay Now</button>
+            <button class="outline-btn">Send to Hirely</button>
+          </div>
+          <p class="small">Payment and owner dashboard can be connected next with Stripe, email submission, or a database.</p>
+        </div>
+        <div class="nav-row">
+          <button class="outline-btn" onclick="goToStep(2)">Back</button>
         </div>
       </section>
     </div>
@@ -524,51 +208,41 @@
         'Uttar Pradesh': ['Noida', 'Lucknow', 'Kanpur']
       }
     };
-
+    function goToStep(step) {
+      document.querySelectorAll('.page').forEach((page, idx) => page.classList.toggle('active', idx === step - 1));
+      [1,2,3].forEach(n => document.getElementById(`step-pill-${n}`).classList.toggle('active', n === step));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     function updateStateOptions() {
       const country = document.getElementById('country').value;
       const locationSelect = document.getElementById('location');
       const citySelect = document.getElementById('city');
       const states = Object.keys(locationOptions[country] || {});
-
       locationSelect.innerHTML = '';
       states.forEach(place => {
-        const option = document.createElement('option');
-        option.value = place;
-        option.textContent = place;
-        locationSelect.appendChild(option);
+        const option = document.createElement('option'); option.value = place; option.textContent = place; locationSelect.appendChild(option);
       });
-
       citySelect.innerHTML = '';
       updateCityOptions();
       updatePhonePrefix();
     }
-
     function updateCityOptions() {
       const country = document.getElementById('country').value;
       const state = document.getElementById('location').value;
       const citySelect = document.getElementById('city');
       const cities = (locationOptions[country] && locationOptions[country][state]) || [];
-
       citySelect.innerHTML = '';
       cities.forEach(city => {
-        const option = document.createElement('option');
-        option.value = city;
-        option.textContent = city;
-        citySelect.appendChild(option);
+        const option = document.createElement('option'); option.value = city; option.textContent = city; citySelect.appendChild(option);
       });
     }
-
     function updatePhonePrefix() {
       const country = document.getElementById('country').value;
       const phoneInput = document.getElementById('phone');
       const prefix = country === 'India' ? '+91 ' : '+44 ';
       phoneInput.placeholder = prefix + 'Phone number';
-      if (!phoneInput.value.trim() || phoneInput.value === '+91 ' || phoneInput.value === '+44 ') {
-        phoneInput.value = prefix;
-      }
+      if (!phoneInput.value.trim() || phoneInput.value === '+91 ' || phoneInput.value === '+44 ') phoneInput.value = prefix;
     }
-
     function getDetails() {
       return {
         fullName: document.getElementById('fullName').value.trim() || 'Your Name',
@@ -583,190 +257,82 @@
         availability: document.getElementById('availability').value.trim() || 'Flexible'
       };
     }
-
-    function clearLinks() {
-      document.getElementById('links').innerHTML = '';
+    function clearLinks() { document.getElementById('links').innerHTML = ''; }
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-
     function generateResumeHTML(d) {
       const skillsByRole = {
-        'Warehouse Operative': [
-          'Strong work ethic and punctuality',
-          'Comfortable with fast-paced tasks',
-          'Teamwork and reliability',
-          'Able to handle manual responsibilities',
-          'Quick learner'
-        ],
-        'Retail Assistant': [
-          'Friendly communication',
-          'Customer service mindset',
-          'Cash-handling readiness',
-          'Teamwork and flexibility',
-          'Positive attitude'
-        ],
-        'Kitchen Assistant': [
-          'Able to work under pressure',
-          'Cleanliness and hygiene awareness',
-          'Team support in busy environments',
-          'Time management',
-          'Willingness to learn quickly'
-        ],
-        'HR Executive': [
-          'Communication and coordination',
-          'Basic recruitment support',
-          'Employee records awareness',
-          'Professional attitude',
-          'Confidentiality'
-        ],
-        'Business Analyst': [
-          'Requirement gathering',
-          'Problem solving',
-          'Stakeholder communication',
-          'Documentation skills',
-          'Analytical thinking'
-        ],
-        'Data Analyst': [
-          'Data cleaning and reporting',
-          'Excel and spreadsheet confidence',
-          'Analytical thinking',
-          'Attention to detail',
-          'Basic visualization skills'
-        ],
-        'Software Engineer': [
-          'Programming fundamentals',
-          'Debugging mindset',
-          'Team collaboration',
-          'Problem solving',
-          'Quick learning ability'
-        ],
-        'Project Manager': [
-          'Planning and coordination',
-          'Deadline tracking',
-          'Team communication',
-          'Risk awareness',
-          'Organizational skills'
-        ]
+        'Warehouse Operative': ['Strong work ethic and punctuality','Comfortable with fast-paced tasks','Teamwork and reliability','Able to handle manual responsibilities','Quick learner'],
+        'Retail Assistant': ['Friendly communication','Customer service mindset','Cash-handling readiness','Teamwork and flexibility','Positive attitude'],
+        'Kitchen Assistant': ['Able to work under pressure','Cleanliness and hygiene awareness','Team support in busy environments','Time management','Willingness to learn quickly'],
+        'HR Executive': ['Communication and coordination','Basic recruitment support','Employee records awareness','Professional attitude','Confidentiality'],
+        'Business Analyst': ['Requirement gathering','Problem solving','Stakeholder communication','Documentation skills','Analytical thinking'],
+        'Data Analyst': ['Data cleaning and reporting','Excel and spreadsheet confidence','Analytical thinking','Attention to detail','Basic visualization skills'],
+        'Software Engineer': ['Programming fundamentals','Debugging mindset','Team collaboration','Problem solving','Quick learning ability'],
+        'Project Manager': ['Planning and coordination','Deadline tracking','Team communication','Risk awareness','Organizational skills']
       };
-
-      const middleSection = d.experience
-        ? `
-          <div class="resume-section">
-            <h3>Experience</h3>
-            <p>${escapeHtml(d.experience)}</p>
-          </div>`
-        : `
-          <div class="resume-section">
-            <h3>Strengths</h3>
-            <ul>
-              <li>Quick learner and adaptable</li>
-              <li>Reliable and disciplined</li>
-              <li>Positive attitude and willingness to contribute</li>
-            </ul>
-          </div>`;
-
+      const middleSection = d.experience ? `
+        <div class="resume-section"><h3>Experience</h3><p>${escapeHtml(d.experience)}</p></div>` : `
+        <div class="resume-section"><h3>Strengths</h3><ul><li>Quick learner and adaptable</li><li>Reliable and disciplined</li><li>Positive attitude and willingness to contribute</li></ul></div>`;
       return `
-        <div class="resume-head">
-          <h1 class="resume-name">${escapeHtml(d.fullName)}</h1>
-          <div class="resume-contact">${escapeHtml(d.phone)} • ${escapeHtml(d.email)} • ${escapeHtml(d.city)}, ${escapeHtml(d.location)}, ${escapeHtml(d.country)}</div>
-        </div>
-        <div class="resume-section">
-          <h3>Profile</h3>
-          <p>Motivated and reliable candidate currently studying ${escapeHtml(d.course)}. Seeking a ${escapeHtml(d.jobType.toLowerCase())} role in ${escapeHtml(d.country)}. Available for ${escapeHtml(d.availability.toLowerCase())}.</p>
-        </div>
-        <div class="resume-section">
-          <h3>Key Skills</h3>
-          <ul>${skillsByRole[d.jobType].map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul>
-        </div>
-        <div class="resume-section">
-          <h3>Education</h3>
-          <p>${escapeHtml(d.course)}</p>
-        </div>
+        <div class="resume-head"><h1 class="resume-name">${escapeHtml(d.fullName)}</h1><div class="resume-contact">${escapeHtml(d.phone)} • ${escapeHtml(d.email)} • ${escapeHtml(d.city)}, ${escapeHtml(d.location)}, ${escapeHtml(d.country)}</div></div>
+        <div class="resume-section"><h3>Profile</h3><p>Motivated and reliable candidate currently studying ${escapeHtml(d.course)}. Seeking a ${escapeHtml(d.jobType.toLowerCase())} role in ${escapeHtml(d.country)}. Available for ${escapeHtml(d.availability.toLowerCase())}.</p></div>
+        <div class="resume-section"><h3>Key Skills</h3><ul>${skillsByRole[d.jobType].map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul></div>
+        <div class="resume-section"><h3>Education</h3><p>${escapeHtml(d.course)}</p></div>
         ${middleSection}
-        <div class="resume-section">
-          <h3>Declaration</h3>
-          <p>I hereby declare that the information provided above is true and correct to the best of my knowledge.</p>
-          <p><strong>${escapeHtml(d.fullName)}</strong></p>
-        </div>`;
+        <div class="resume-section"><h3>Declaration</h3><p>I hereby declare that the information provided above is true and correct to the best of my knowledge.</p><p><strong>${escapeHtml(d.fullName)}</strong></p></div>`;
     }
-
     function generateCV() {
       const d = getDetails();
-      clearLinks();
       document.getElementById('output').innerHTML = generateResumeHTML(d);
     }
-
     function generateEmail() {
       const d = getDetails();
-      clearLinks();
       const introLine = d.experience ? `${d.experience} ` : '';
-      const emailText = `Subject: Application for ${d.jobType} Role\n\nDear Hiring Manager,\n\nI hope you are well.\n\nI am writing to express my interest in the ${d.jobType} position. I am currently studying ${d.course} and I am looking for an opportunity to contribute to your team in ${d.country}.\n\n${introLine}I am reliable, quick to learn, and comfortable working in a team. I am available for ${d.availability.toLowerCase()} and can start as required.\n\nPlease find my CV attached for your consideration.\n\nThank you for your time.\n\nKind regards,\n${d.fullName}\n${d.phone}\n${d.email}`;
+      const emailText = `Subject: Application for ${d.jobType} Role
+
+Dear Hiring Manager,
+
+I hope you are well.
+
+I am writing to express my interest in the ${d.jobType} position. I am currently studying ${d.course} and I am looking for an opportunity to contribute to your team in ${d.country}.
+
+${introLine}I am reliable, quick to learn, and comfortable working in a team. I am available for ${d.availability.toLowerCase()} and can start as required.
+
+Please find my CV attached for your consideration.
+
+Thank you for your time.
+
+Kind regards,
+${d.fullName}
+${d.phone}
+${d.email}`;
       document.getElementById('output').innerHTML = `<div class="resume-section"><h3>Email Draft</h3><div style="white-space:pre-wrap;">${escapeHtml(emailText)}</div></div>`;
     }
-
     function downloadPDF() {
       const d = getDetails();
       const pdfWindow = window.open('', '_blank');
-      if (!pdfWindow) {
-        alert('Popup blocked. Please allow popups and try again.');
-        return;
-      }
-
+      if (!pdfWindow) { alert('Popup blocked. Please allow popups and try again.'); return; }
       const resumeHtml = generateResumeHTML(d);
-      pdfWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${escapeHtml(d.fullName)} CV</title>
-          <style>
-            @page { size: A4; margin: 10mm; }
-            body { font-family: Arial, sans-serif; padding: 0; color: #111827; background: #fff; }
-            .sheet { width: 190mm; min-height: 277mm; margin: 0 auto; }
-            .resume-head { border-bottom: 2px solid #dbeafe; padding-bottom: 12px; margin-bottom: 14px; }
-            .resume-name { font-size: 26px; font-weight: 700; margin: 0 0 6px; }
-            .resume-contact { color: #4b5563; font-size: 13px; }
-            .resume-section { margin-top: 14px; }
-            .resume-section h3 { margin: 0 0 6px; font-size: 14px; color: #1d4ed8; text-transform: uppercase; }
-            .resume-section p, .resume-section li { font-size: 13px; line-height: 1.45; margin: 0; }
-            ul { padding-left: 18px; margin: 0; }
-          </style>
-        </head>
-        <body>
-          <div class="sheet">${resumeHtml}</div>
-          <script>
-            window.onload = function() { window.print(); };
-          <\/script>
-        </body>
-        </html>
-      `);
+      pdfWindow.document.write(`<!DOCTYPE html><html><head><title>${escapeHtml(d.fullName)} CV</title><style>@page { size: A4; margin: 10mm; } body { font-family: Arial, sans-serif; padding: 0; color: #111827; background: #fff; } .sheet { width: 190mm; min-height: 277mm; margin: 0 auto; } .resume-head { border-bottom: 2px solid #dbeafe; padding-bottom: 12px; margin-bottom: 14px; } .resume-name { font-size: 26px; font-weight: 700; margin: 0 0 6px; } .resume-contact { color: #4b5563; font-size: 13px; } .resume-section { margin-top: 14px; } .resume-section h3 { margin: 0 0 6px; font-size: 14px; color: #1d4ed8; text-transform: uppercase; } .resume-section p, .resume-section li { font-size: 13px; line-height: 1.45; margin: 0; } ul { padding-left: 18px; margin: 0; }</style></head><body><div class="sheet">${resumeHtml}</div><script>window.onload = function() { window.print(); };<\/script></body></html>`);
       pdfWindow.document.close();
     }
-
     async function shareWhatsApp() {
       const d = getDetails();
       const resumeText = `${d.fullName}
 ${d.phone}
 ${d.email}
 ${d.city}, ${d.location}, ${d.country}`;
-      const message = `Smart Apply Assistant CV
+      const message = `Hirely CV
 
 ${resumeText}`;
-
       try {
-        if (navigator.share) {
-          await navigator.share({
-            title: `${d.fullName} CV`,
-            text: message
-          });
-          return;
-        }
-      } catch (e) {
-        // fall through
-      }
-
+        if (navigator.share) { await navigator.share({ title: `${d.fullName} CV`, text: message }); return; }
+      } catch (e) {}
       const waText = encodeURIComponent(message);
       window.open(`https://wa.me/?text=${waText}`, '_blank');
     }
-
     function resetForm() {
       document.getElementById('fullName').value = '';
       document.getElementById('email').value = '';
@@ -776,154 +342,41 @@ ${resumeText}`;
       document.getElementById('experience').value = '';
       document.getElementById('availability').value = 'Part-time';
       updateStateOptions();
-      document.getElementById('output').innerHTML = `
-        <div class="resume-head">
-          <h1 class="resume-name">Your Name</h1>
-          <div class="resume-contact">Phone • Email • City, State, Country</div>
-        </div>
-        <div class="resume-section">
-          <h3>Profile</h3>
-          <p>Your resume will appear here after you click Generate CV.</p>
-        </div>`;
+      document.getElementById('output').innerHTML = `<div class="resume-head"><h1 class="resume-name">Your Name</h1><div class="resume-contact">Phone • Email • City, State, Country</div></div><div class="resume-section"><h3>Profile</h3><p>Your resume will appear here after you click Generate CV.</p></div>`;
       clearLinks();
+      document.getElementById('jobSummary').textContent = 'Job results will appear below.';
+      goToStep(1);
     }
-
     function generateJobLinks() {
       const d = getDetails();
-      const output = document.getElementById('output');
       const links = document.getElementById('links');
       links.innerHTML = '';
-
       const locationText = d.location || (d.country === 'India' ? 'Telangana' : 'England - Birmingham');
       const cityText = d.city || (d.country === 'India' ? 'Hyderabad' : 'Birmingham');
       const encodedCity = encodeURIComponent(cityText);
       const encodedRole = encodeURIComponent(d.jobType);
       let jobs = [];
-
       if (d.country === 'India') {
         jobs = [
-          {
-            title: `${d.jobType} Jobs in ${cityText}`,
-            company: 'Indeed India',
-            location: `${cityText}, ${locationText}`,
-            desc: 'Current India job results for the selected role and city.',
-            url: `https://in.indeed.com/jobs?q=${encodedRole}&l=${encodedCity}`
-          },
-          {
-            title: `${d.jobType} Jobs in ${cityText}`,
-            company: 'LinkedIn Jobs',
-            location: `${cityText}, ${locationText}`,
-            desc: 'LinkedIn jobs filtered to your selected role and city.',
-            url: `https://www.linkedin.com/jobs/search/?keywords=${encodedRole}&location=${encodedCity}`
-          },
-          {
-            title: `${d.jobType} Jobs in ${cityText}`,
-            company: 'Naukri',
-            location: `${cityText}, ${locationText}`,
-            desc: 'Naukri search results for current openings in your selected city.',
-            url: `https://www.naukri.com/${encodedRole.replace(/%20/g,'-').toLowerCase()}-jobs-in-${encodedCity.replace(/%20/g,'-').toLowerCase()}`
-          }
+          { title: `${d.jobType} Jobs in ${cityText}`, company: 'Indeed India', location: `${cityText}, ${locationText}`, desc: 'Current India job results for the selected role and city.', url: `https://in.indeed.com/jobs?q=${encodedRole}&l=${encodedCity}` },
+          { title: `${d.jobType} Jobs in ${cityText}`, company: 'LinkedIn Jobs', location: `${cityText}, ${locationText}`, desc: 'LinkedIn jobs filtered to your selected role and city.', url: `https://www.linkedin.com/jobs/search/?keywords=${encodedRole}&location=${encodedCity}` },
+          { title: `${d.jobType} Jobs in ${cityText}`, company: 'Naukri', location: `${cityText}, ${locationText}`, desc: 'Naukri search results for current openings in your selected city.', url: `https://www.naukri.com/${encodedRole.replace(/%20/g,'-').toLowerCase()}-jobs-in-${encodedCity.replace(/%20/g,'-').toLowerCase()}` }
         ];
       } else {
         jobs = [
-          {
-            title: `${d.jobType} Jobs in ${cityText}`,
-            company: 'Indeed UK',
-            location: `${cityText}, ${locationText}`,
-            desc: 'Latest UK job listings for the selected role and city.',
-            url: `https://uk.indeed.com/jobs?q=${encodedRole}&l=${encodedCity}&sort=date`
-          },
-          {
-            title: `${d.jobType} Jobs in ${cityText}`,
-            company: 'LinkedIn Jobs',
-            location: `${cityText}, ${locationText}`,
-            desc: 'LinkedIn job search for the selected role and city.',
-            url: `https://www.linkedin.com/jobs/search/?keywords=${encodedRole}&location=${encodedCity}`
-          },
-          {
-            title: `${d.jobType} Jobs in ${cityText}`,
-            company: 'Reed',
-            location: `${cityText}, ${locationText}`,
-            desc: 'UK job board search for your selected role and city.',
-            url: `https://www.reed.co.uk/jobs/${encodedRole.replace(/%20/g,'-').toLowerCase()}-jobs-in-${encodedCity.replace(/%20/g,'-').toLowerCase()}`
-          }
+          { title: `${d.jobType} Jobs in ${cityText}`, company: 'Indeed UK', location: `${cityText}, ${locationText}`, desc: 'Latest UK job listings for the selected role and city.', url: `https://uk.indeed.com/jobs?q=${encodedRole}&l=${encodedCity}&sort=date` },
+          { title: `${d.jobType} Jobs in ${cityText}`, company: 'LinkedIn Jobs', location: `${cityText}, ${locationText}`, desc: 'LinkedIn job search for the selected role and city.', url: `https://www.linkedin.com/jobs/search/?keywords=${encodedRole}&location=${encodedCity}` },
+          { title: `${d.jobType} Jobs in ${cityText}`, company: 'Reed', location: `${cityText}, ${locationText}`, desc: 'UK job board search for your selected role and city.', url: `https://www.reed.co.uk/jobs/${encodedRole.replace(/%20/g,'-').toLowerCase()}-jobs-in-${encodedCity.replace(/%20/g,'-').toLowerCase()}` }
         ];
       }
-
-      output.innerHTML = `<div class="resume-section"><h3>Job Search</h3><p>Showing job links for ${escapeHtml(d.jobType)} in ${escapeHtml(cityText)}, ${escapeHtml(locationText)}, ${escapeHtml(d.country)}. Click Apply Now to open the job platform and continue the application.</p></div>`;
-
+      document.getElementById('jobSummary').textContent = `Showing job links for ${d.jobType} in ${cityText}, ${locationText}, ${d.country}.`;
       jobs.forEach(job => {
         const card = document.createElement('div');
         card.className = 'job-link';
-
-        const title = document.createElement('strong');
-        title.textContent = job.title;
-
-        const meta = document.createElement('span');
-        meta.className = 'job-meta';
-        meta.textContent = `${job.company} • ${job.location}`;
-
-        const desc = document.createElement('span');
-        desc.className = 'job-desc';
-        desc.textContent = job.desc;
-
-        const urlText = document.createElement('span');
-        urlText.className = 'job-url';
-        urlText.textContent = job.url;
-
-        const actions = document.createElement('div');
-        actions.className = 'job-actions';
-
-        const applyBtn = document.createElement('a');
-        applyBtn.className = 'apply-tag';
-        applyBtn.href = job.url;
-        applyBtn.target = '_blank';
-        applyBtn.rel = 'noopener noreferrer';
-        applyBtn.textContent = 'Apply Now';
-
-        const directLink = document.createElement('a');
-        directLink.className = 'plain-link';
-        directLink.href = job.url;
-        directLink.target = '_blank';
-        directLink.rel = 'noopener noreferrer';
-        directLink.textContent = 'Open direct link';
-
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'outline-btn';
-        copyBtn.type = 'button';
-        copyBtn.textContent = 'Copy Link';
-        copyBtn.onclick = async () => {
-          try {
-            await navigator.clipboard.writeText(job.url);
-            copyBtn.textContent = 'Copied';
-            setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 1500);
-          } catch (e) {
-            alert('Could not copy link. URL: ' + job.url);
-          }
-        };
-
-        actions.appendChild(applyBtn);
-        actions.appendChild(directLink);
-        actions.appendChild(copyBtn);
-
-        card.appendChild(title);
-        card.appendChild(meta);
-        card.appendChild(desc);
-        card.appendChild(urlText);
-        card.appendChild(actions);
+        card.innerHTML = `<strong>${escapeHtml(job.title)}</strong><span class="job-meta">${escapeHtml(job.company)} • ${escapeHtml(job.location)}</span><span class="job-desc">${escapeHtml(job.desc)}</span><span class="job-url">${escapeHtml(job.url)}</span><div class="job-actions"><a class="apply-tag" href="${job.url}" target="_blank" rel="noopener noreferrer">Apply Now</a><a class="btn-link outline-btn" href="${job.url}" target="_blank" rel="noopener noreferrer">Open Link</a></div>`;
         links.appendChild(card);
       });
     }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
     updateStateOptions();
     updatePhonePrefix();
   </script>
