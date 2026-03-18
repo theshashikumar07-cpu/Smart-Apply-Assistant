@@ -4,124 +4,274 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Apply Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
+      --bg1: #eef6ff;
+      --bg2: #fff7ed;
+      --card: rgba(255,255,255,0.92);
+      --text: #172033;
+      --muted: #5f6b84;
       --primary: #2563eb;
       --primary-dark: #1d4ed8;
-      --border: #e5e7eb;
+      --secondary: #7c3aed;
+      --accent: #0ea5a4;
+      --warm: #f59e0b;
+      --border: rgba(148,163,184,0.28);
       --success: #ecfdf5;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
       color: var(--text);
       line-height: 1.5;
+      background:
+        radial-gradient(circle at top left, #dbeafe 0%, transparent 28%),
+        radial-gradient(circle at top right, #fde68a 0%, transparent 22%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
     }
+
     .container {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 28px;
     }
+
     .hero {
       text-align: center;
-      padding: 36px 20px 18px;
+      padding: 38px 20px 24px;
     }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      background: rgba(255,255,255,0.8);
+      color: var(--primary-dark);
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      border: 1px solid rgba(37,99,235,0.12);
+      box-shadow: 0 6px 16px rgba(37,99,235,0.08);
+    }
+
     .hero h1 {
       margin: 0 0 10px;
-      font-size: 2.2rem;
+      font-size: 2.7rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
     }
+
     .hero p {
       margin: 0 auto;
-      max-width: 720px;
+      max-width: 780px;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: 1.02rem;
     }
+
     .grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 20px;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 22px;
       align-items: start;
     }
+
     .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
     }
+
     .card h2 {
-      margin-top: 0;
-      font-size: 1.25rem;
+      margin: 0 0 16px;
+      font-size: 1.3rem;
     }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
     .field {
       margin-bottom: 14px;
     }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
     label {
       display: block;
       font-weight: 700;
       margin-bottom: 6px;
       font-size: 0.95rem;
     }
+
     input, select, textarea {
       width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      padding: 13px 14px;
+      border: 1px solid rgba(148,163,184,0.34);
+      border-radius: 14px;
       font-size: 0.95rem;
-      background: #fff;
+      background: rgba(255,255,255,0.95);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
     }
-    textarea { min-height: 100px; resize: vertical; }
-    .btn-row {
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(37,99,235,0.5);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .btn-row, .action-row {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
+
     button {
       border: none;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    button:hover { background: var(--primary-dark); }
-    .secondary {
-      background: #111827;
-    }
-    .secondary:hover { background: #000; }
-    .output-box {
-      background: #f9fafb;
-      border: 1px solid var(--border);
+      padding: 13px 18px;
       border-radius: 14px;
-      padding: 14px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(99,102,241,0.18);
+      transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 28px rgba(99,102,241,0.22);
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+    }
+
+    .outline-btn {
+      background: rgba(255,255,255,0.95);
+      color: var(--primary-dark);
+      border: 1px solid rgba(37,99,235,0.18);
+      box-shadow: none;
+    }
+
+    .outline-btn:hover {
+      background: #ffffff;
+    }
+
+    .whatsapp-btn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+    }
+
+    .output-box {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(148,163,184,0.28);
+      border-radius: 18px;
+      padding: 18px;
       white-space: pre-wrap;
-      min-height: 220px;
+      min-height: 420px;
+      font-size: 0.96rem;
+      overflow-wrap: anywhere;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .resume-preview {
+      background: #fff;
+      border: 1px solid rgba(148,163,184,0.25);
+      border-radius: 18px;
+      padding: 26px;
+      min-height: 420px;
+      box-shadow: 0 12px 28px rgba(15,23,42,0.06);
+    }
+
+    .resume-head {
+      border-bottom: 2px solid #dbeafe;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .resume-name {
+      font-size: 1.9rem;
+      font-weight: 800;
+      margin: 0 0 6px;
+      color: #0f172a;
+    }
+
+    .resume-contact {
+      color: var(--muted);
       font-size: 0.94rem;
     }
+
+    .resume-section {
+      margin-top: 18px;
+    }
+
+    .resume-section h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .resume-section p, .resume-section li {
+      font-size: 0.95rem;
+      color: #243047;
+    }
+
+    .resume-section ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
     .job-links {
       display: grid;
       gap: 12px;
       margin-top: 14px;
     }
+
     .job-link {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      background: #fff;
+      border: 1px solid rgba(148,163,184,0.25);
+      border-radius: 16px;
+      padding: 15px;
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
     }
+
     .job-link strong {
       display: block;
       margin-bottom: 6px;
     }
+
     .job-meta,
     .job-desc,
     .job-url {
@@ -130,15 +280,17 @@
       font-size: 0.92rem;
       margin-top: 4px;
     }
+
     .job-actions {
       margin-top: 12px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .apply-tag {
       display: inline-block;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--warm), #f97316);
       color: #fff;
       padding: 8px 12px;
       border-radius: 10px;
@@ -146,7 +298,11 @@
       font-weight: 700;
       text-decoration: none;
     }
-    .apply-tag:hover { background: var(--primary-dark); }
+
+    .apply-tag:hover {
+      opacity: 0.92;
+    }
+
     .plain-link {
       display: inline-block;
       color: var(--primary-dark);
@@ -154,119 +310,147 @@
       font-size: 0.9rem;
       word-break: break-all;
     }
+
     .tip {
-      background: var(--success);
-      border: 1px solid #bbf7d0;
-      border-radius: 12px;
-      padding: 12px 14px;
+      background: linear-gradient(135deg, #eff6ff, #ecfeff);
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 13px 14px;
       font-size: 0.92rem;
       margin-top: 14px;
+      color: #1e3a8a;
     }
+
     .small {
       color: var(--muted);
-      font-size: 0.88rem;
-      margin-top: 8px;
+      font-size: 0.86rem;
+      margin-top: 10px;
     }
-    @media (max-width: 860px) {
+
+    @media (max-width: 960px) {
       .grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 1.8rem; }
+      .field-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <section class="hero">
+      <div class="badge-row">
+        <span class="badge">UK + India</span>
+        <span class="badge">Live CV</span>
+        <span class="badge">PDF Download</span>
+        <span class="badge">WhatsApp Share</span>
+      </div>
       <h1>Smart Apply Assistant</h1>
-      <p>Create a CV summary, application email, and direct job-platform links for UK and India roles across entry-level and professional job categories.</p>
+      <p>Build a proper resume instantly, download it as PDF, generate a job email, and share your profile through WhatsApp from one clean page.</p>
     </section>
 
     <div class="grid">
       <section class="card">
         <h2>Your Details</h2>
 
-        <div class="field">
-          <label for="fullName">Full Name</label>
-          <input id="fullName" type="text" placeholder="Enter full name" />
-        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="fullName">Full Name</label>
+            <input id="fullName" type="text" placeholder="Enter full name" />
+          </div>
 
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="Enter email" />
-        </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="Enter email" />
+          </div>
 
-        <div class="field">
-          <label for="country">Country</label>
-          <select id="country" onchange="updateStateOptions()">
-            <option value="UK">UK</option>
-            <option value="India">India</option>
-          </select>
-        </div>
+          <div class="field">
+            <label for="country">Country</label>
+            <select id="country" onchange="updateStateOptions()">
+              <option value="UK">UK</option>
+              <option value="India">India</option>
+            </select>
+          </div>
 
-        <div class="field">
-          <label for="phone">Phone Number</label>
-          <input id="phone" type="text" placeholder="Phone number" />
-        </div>
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="text" placeholder="Phone number" />
+          </div>
 
-        <div class="field">
-          <label for="location">State / Region</label>
-          <select id="location" onchange="updateCityOptions()"></select>
-        </div>
+          <div class="field">
+            <label for="location">State / Region</label>
+            <select id="location" onchange="updateCityOptions()"></select>
+          </div>
 
-        <div class="field">
-          <label for="city">City</label>
-          <select id="city"></select>
-        </div>
+          <div class="field">
+            <label for="city">City</label>
+            <select id="city"></select>
+          </div>
 
-        <div class="field">
-          <label for="course">Course / Education</label>
-          <input id="course" type="text" placeholder="Course or education" />
-        </div>
+          <div class="field full">
+            <label for="course">Course / Education</label>
+            <input id="course" type="text" placeholder="Course or education" />
+          </div>
 
-        <div class="field">
-          <label for="jobType">Target Job Type</label>
-          <select id="jobType">
-            <option value="Warehouse Operative">Warehouse Operative</option>
-            <option value="Retail Assistant">Retail Assistant</option>
-            <option value="Kitchen Assistant">Kitchen Assistant</option>
-            <option value="HR Executive">HR Executive</option>
-            <option value="Business Analyst">Business Analyst</option>
-            <option value="Data Analyst">Data Analyst</option>
-            <option value="Software Engineer">Software Engineer</option>
-            <option value="Project Manager">Project Manager</option>
-          </select>
-        </div>
+          <div class="field">
+            <label for="jobType">Target Job Type</label>
+            <select id="jobType">
+              <option value="Warehouse Operative">Warehouse Operative</option>
+              <option value="Retail Assistant">Retail Assistant</option>
+              <option value="Kitchen Assistant">Kitchen Assistant</option>
+              <option value="HR Executive">HR Executive</option>
+              <option value="Business Analyst">Business Analyst</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="Software Engineer">Software Engineer</option>
+              <option value="Project Manager">Project Manager</option>
+            </select>
+          </div>
 
-        <div class="field">
-          <label for="experience">Experience / Strengths</label>
-          <textarea id="experience" placeholder="If you have experience, write it here. If not, leave it blank and the resume will show strengths only."></textarea>
-        </div>
+          <div class="field">
+            <label for="availability">Availability</label>
+            <select id="availability">
+              <option value="Part-time">Part-time</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Evenings">Evenings</option>
+              <option value="Weekends">Weekends</option>
+              <option value="Flexible">Flexible</option>
+            </select>
+          </div>
 
-        <div class="field">
-          <label for="availability">Availability</label>
-          <select id="availability">
-            <option value="Part-time">Part-time</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Evenings">Evenings</option>
-            <option value="Weekends">Weekends</option>
-            <option value="Flexible">Flexible</option>
-          </select>
+          <div class="field full">
+            <label for="experience">Experience / Strengths</label>
+            <textarea id="experience" placeholder="If you have experience, write it here. If not, leave it blank and the resume will show strengths only."></textarea>
+          </div>
         </div>
 
         <div class="btn-row">
-          <button onclick="generateCV()">Generate CV Summary</button>
+          <button onclick="generateCV()">Generate CV</button>
           <button onclick="generateEmail()">Generate Email</button>
           <button class="secondary" onclick="generateJobLinks()">Show Job Links</button>
         </div>
 
-        <p class="small">This version keeps everything inside one file and works directly in the browser with no backend.</p>
+        <div class="action-row">
+          <button class="outline-btn" onclick="downloadPDF()">Download PDF</button>
+          <button class="whatsapp-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+          <button class="outline-btn" onclick="resetForm()">Reset Form</button>
+        </div>
+
+        <p class="small">This website works directly in the browser. Payment, dashboard, and saved profiles are future features, so they are not buttons yet.</p>
       </section>
 
       <section class="card">
-        <h2>Output</h2>
-        <div id="output" class="output-box">Your CV summary, application email, or job links will appear here.</div>
+        <h2>Resume / Output</h2>
+        <div id="output" class="resume-preview">
+          <div class="resume-head">
+            <h1 class="resume-name">Your Name</h1>
+            <div class="resume-contact">Phone • Email • City, State, Country</div>
+          </div>
+          <div class="resume-section">
+            <h3>Profile</h3>
+            <p>Your resume will appear here after you click Generate CV.</p>
+          </div>
+        </div>
         <div id="links" class="job-links"></div>
         <div class="tip">
-          Best first version: use this as a lead tool. Later, add OpenAI API, PDF export, payment, and a customer dashboard.
+          Right now, Download PDF and WhatsApp Share are real working buttons. Payment, dashboard, and saved profiles are future upgrades.
         </div>
       </section>
     </div>
@@ -362,10 +546,7 @@
       document.getElementById('links').innerHTML = '';
     }
 
-    function generateCV() {
-      const d = getDetails();
-      clearLinks();
-
+    function generateResumeHTML(d) {
       const skillsByRole = {
         'Warehouse Operative': [
           'Strong work ethic and punctuality',
@@ -425,68 +606,123 @@
         ]
       };
 
-      const detailsBlock = `${d.fullName}
-Phone: ${d.phone}
-Email: ${d.email}
-Location: ${d.city}, ${d.location}, ${d.country}`;
-      const intro = `PROFILE
-Motivated and reliable candidate currently studying ${d.course}. Seeking a ${d.jobType.toLowerCase()} role in ${d.country}. Available for ${d.availability.toLowerCase()}.`;
       const middleSection = d.experience
-        ? `EXPERIENCE
-- ${d.experience}`
-        : `STRENGTHS
-- Quick learner and adaptable
-- Reliable and disciplined
-- Positive attitude and willingness to contribute`;
+        ? `
+          <div class="resume-section">
+            <h3>Experience</h3>
+            <p>${escapeHtml(d.experience)}</p>
+          </div>`
+        : `
+          <div class="resume-section">
+            <h3>Strengths</h3>
+            <ul>
+              <li>Quick learner and adaptable</li>
+              <li>Reliable and disciplined</li>
+              <li>Positive attitude and willingness to contribute</li>
+            </ul>
+          </div>`;
 
-      const profile = `${detailsBlock}
+      return `
+        <div class="resume-head">
+          <h1 class="resume-name">${escapeHtml(d.fullName)}</h1>
+          <div class="resume-contact">${escapeHtml(d.phone)} • ${escapeHtml(d.email)} • ${escapeHtml(d.city)}, ${escapeHtml(d.location)}, ${escapeHtml(d.country)}</div>
+        </div>
+        <div class="resume-section">
+          <h3>Profile</h3>
+          <p>Motivated and reliable candidate currently studying ${escapeHtml(d.course)}. Seeking a ${escapeHtml(d.jobType.toLowerCase())} role in ${escapeHtml(d.country)}. Available for ${escapeHtml(d.availability.toLowerCase())}.</p>
+        </div>
+        <div class="resume-section">
+          <h3>Key Skills</h3>
+          <ul>${skillsByRole[d.jobType].map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}</ul>
+        </div>
+        <div class="resume-section">
+          <h3>Education</h3>
+          <p>${escapeHtml(d.course)}</p>
+        </div>
+        ${middleSection}
+        <div class="resume-section">
+          <h3>Declaration</h3>
+          <p>I hereby declare that the information provided above is true and correct to the best of my knowledge.</p>
+          <p><strong>${escapeHtml(d.fullName)}</strong></p>
+        </div>`;
+    }
 
-${intro}
-
-KEY SKILLS
-- ${skillsByRole[d.jobType].join('\n- ')}
-
-EDUCATION
-- ${d.course}
-
-${middleSection}
-
-DECLARATION
-I hereby declare that the information provided above is true and correct to the best of my knowledge.
-
-${d.fullName}`;
-
-      document.getElementById('output').textContent = profile;
+    function generateCV() {
+      const d = getDetails();
+      clearLinks();
+      document.getElementById('output').innerHTML = generateResumeHTML(d);
     }
 
     function generateEmail() {
       const d = getDetails();
       clearLinks();
+      const introLine = d.experience ? `${d.experience} ` : '';
+      const emailText = `Subject: Application for ${d.jobType} Role\n\nDear Hiring Manager,\n\nI hope you are well.\n\nI am writing to express my interest in the ${d.jobType} position. I am currently studying ${d.course} and I am looking for an opportunity to contribute to your team in ${d.country}.\n\n${introLine}I am reliable, quick to learn, and comfortable working in a team. I am available for ${d.availability.toLowerCase()} and can start as required.\n\nPlease find my CV attached for your consideration.\n\nThank you for your time.\n\nKind regards,\n${d.fullName}\n${d.phone}\n${d.email}`;
+      document.getElementById('output').innerHTML = `<div class="resume-section"><h3>Email Draft</h3><div style="white-space:pre-wrap;">${escapeHtml(emailText)}</div></div>`;
+    }
 
-      const introLine = d.experience
-        ? `${d.experience} `
-        : '';
+    function downloadPDF() {
+      const d = getDetails();
+      const pdfWindow = window.open('', '_blank');
+      if (!pdfWindow) {
+        alert('Popup blocked. Please allow popups and try again.');
+        return;
+      }
 
-      const emailText = `Subject: Application for ${d.jobType} Role
+      const resumeHtml = generateResumeHTML(d);
+      pdfWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${escapeHtml(d.fullName)} CV</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 30px; color: #111827; }
+            .resume-head { border-bottom: 2px solid #dbeafe; padding-bottom: 14px; margin-bottom: 16px; }
+            .resume-name { font-size: 28px; font-weight: 700; margin: 0 0 6px; }
+            .resume-contact { color: #4b5563; font-size: 14px; }
+            .resume-section { margin-top: 18px; }
+            .resume-section h3 { margin: 0 0 8px; font-size: 15px; color: #1d4ed8; text-transform: uppercase; }
+            .resume-section p, .resume-section li { font-size: 14px; line-height: 1.6; }
+            ul { padding-left: 18px; }
+          </style>
+        </head>
+        <body>
+          ${resumeHtml}
+          <script>
+            window.onload = function() { window.print(); };
+          <\/script>
+        </body>
+        </html>
+      `);
+      pdfWindow.document.close();
+    }
 
-Dear Hiring Manager,
+    function shareWhatsApp() {
+      const d = getDetails();
+      const phoneNumber = '447721320114';
+      const message = `Hi Shashi, I used Smart Apply Assistant.%0A%0AName: ${encodeURIComponent(d.fullName)}%0ARole: ${encodeURIComponent(d.jobType)}%0ACity: ${encodeURIComponent(d.city)}%0AEmail: ${encodeURIComponent(d.email)}`;
+      window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    }
 
-I hope you are well.
-
-I am writing to express my interest in the ${d.jobType} position. I am currently studying ${d.course} and I am looking for an opportunity to contribute to your team in ${d.country}.
-
-${introLine}I am reliable, quick to learn, and comfortable working in a team. I am available for ${d.availability.toLowerCase()} and can start as required.
-
-Please find my CV attached for your consideration.
-
-Thank you for your time.
-
-Kind regards,
-${d.fullName}
-${d.phone}
-${d.email}`;
-
-      document.getElementById('output').textContent = emailText;
+    function resetForm() {
+      document.getElementById('fullName').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('country').value = 'UK';
+      document.getElementById('course').value = '';
+      document.getElementById('jobType').value = 'Warehouse Operative';
+      document.getElementById('experience').value = '';
+      document.getElementById('availability').value = 'Part-time';
+      updateStateOptions();
+      document.getElementById('output').innerHTML = `
+        <div class="resume-head">
+          <h1 class="resume-name">Your Name</h1>
+          <div class="resume-contact">Phone • Email • City, State, Country</div>
+        </div>
+        <div class="resume-section">
+          <h3>Profile</h3>
+          <p>Your resume will appear here after you click Generate CV.</p>
+        </div>`;
+      clearLinks();
     }
 
     function generateJobLinks() {
@@ -551,7 +787,7 @@ ${d.email}`;
         ];
       }
 
-      output.textContent = `Showing job links for ${d.jobType} in ${cityText}, ${locationText}, ${d.country}. Click Apply Now to open the job platform and continue the application.`;
+      output.innerHTML = `<div class="resume-section"><h3>Job Search</h3><p>Showing job links for ${escapeHtml(d.jobType)} in ${escapeHtml(cityText)}, ${escapeHtml(locationText)}, ${escapeHtml(d.country)}. Click Apply Now to open the job platform and continue the application.</p></div>`;
 
       jobs.forEach(job => {
         const card = document.createElement('div');
@@ -575,13 +811,12 @@ ${d.email}`;
         const actions = document.createElement('div');
         actions.className = 'job-actions';
 
-        const applyBtn = document.createElement('button');
+        const applyBtn = document.createElement('a');
         applyBtn.className = 'apply-tag';
-        applyBtn.type = 'button';
+        applyBtn.href = job.url;
+        applyBtn.target = '_blank';
+        applyBtn.rel = 'noopener noreferrer';
         applyBtn.textContent = 'Apply Now';
-        applyBtn.onclick = () => {
-          window.open(job.url, '_blank', 'noopener,noreferrer');
-        };
 
         const directLink = document.createElement('a');
         directLink.className = 'plain-link';
@@ -591,16 +826,14 @@ ${d.email}`;
         directLink.textContent = 'Open direct link';
 
         const copyBtn = document.createElement('button');
-        copyBtn.className = 'secondary';
+        copyBtn.className = 'outline-btn';
         copyBtn.type = 'button';
         copyBtn.textContent = 'Copy Link';
         copyBtn.onclick = async () => {
           try {
             await navigator.clipboard.writeText(job.url);
             copyBtn.textContent = 'Copied';
-            setTimeout(() => {
-              copyBtn.textContent = 'Copy Link';
-            }, 1500);
+            setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 1500);
           } catch (e) {
             alert('Could not copy link. URL: ' + job.url);
           }
@@ -617,6 +850,15 @@ ${d.email}`;
         card.appendChild(actions);
         links.appendChild(card);
       });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     updateStateOptions();
