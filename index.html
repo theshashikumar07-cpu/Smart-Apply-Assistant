@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Apply Assistant</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --border: #e5e7eb;
+      --success: #ecfdf5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero {
+      text-align: center;
+      padding: 36px 20px 18px;
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 2.2rem;
+    }
+    .hero p {
+      margin: 0 auto;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    button {
+      border: none;
+      background: var(--primary);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { background: var(--primary-dark); }
+    .secondary {
+      background: #111827;
+    }
+    .secondary:hover { background: #000; }
+    .output-box {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      white-space: pre-wrap;
+      min-height: 220px;
+      font-size: 0.94rem;
+    }
+    .job-links {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .job-link {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+    .job-link strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .job-meta,
+    .job-desc,
+    .job-url {
+      display: block;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 4px;
+    }
+    .job-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .apply-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .apply-tag:hover { background: var(--primary-dark); }
+    .plain-link {
+      display: inline-block;
+      color: var(--primary-dark);
+      text-decoration: underline;
+      font-size: 0.9rem;
+      word-break: break-all;
+    }
+    .tip {
+      background: var(--success);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.92rem;
+      margin-top: 14px;
+    }
+    .small {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 8px;
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Smart Apply Assistant</h1>
+      <p>Create a CV summary, application email, and direct job-platform links for UK and India roles across entry-level and professional job categories.</p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Your Details</h2>
+
+        <div class="field">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" type="text" placeholder="Enter full name" />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="Enter email" />
+        </div>
+
+        <div class="field">
+          <label for="country">Country</label>
+          <select id="country" onchange="updateStateOptions()">
+            <option value="UK">UK</option>
+            <option value="India">India</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="text" placeholder="Phone number" />
+        </div>
+
+        <div class="field">
+          <label for="location">State / Region</label>
+          <select id="location" onchange="updateCityOptions()"></select>
+        </div>
+
+        <div class="field">
+          <label for="city">City</label>
+          <select id="city"></select>
+        </div>
+
+        <div class="field">
+          <label for="course">Course / Education</label>
+          <input id="course" type="text" placeholder="Course or education" />
+        </div>
+
+        <div class="field">
+          <label for="jobType">Target Job Type</label>
+          <select id="jobType">
+            <option value="Warehouse Operative">Warehouse Operative</option>
+            <option value="Retail Assistant">Retail Assistant</option>
+            <option value="Kitchen Assistant">Kitchen Assistant</option>
+            <option value="HR Executive">HR Executive</option>
+            <option value="Business Analyst">Business Analyst</option>
+            <option value="Data Analyst">Data Analyst</option>
+            <option value="Software Engineer">Software Engineer</option>
+            <option value="Project Manager">Project Manager</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="experience">Experience / Strengths</label>
+          <textarea id="experience" placeholder="If you have experience, write it here. If not, leave it blank and the resume will show strengths only."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="availability">Availability</label>
+          <select id="availability">
+            <option value="Part-time">Part-time</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Evenings">Evenings</option>
+            <option value="Weekends">Weekends</option>
+            <option value="Flexible">Flexible</option>
+          </select>
+        </div>
+
+        <div class="btn-row">
+          <button onclick="generateCV()">Generate CV Summary</button>
+          <button onclick="generateEmail()">Generate Email</button>
+          <button class="secondary" onclick="generateJobLinks()">Show Job Links</button>
+        </div>
+
+        <p class="small">This version keeps everything inside one file and works directly in the browser with no backend.</p>
+      </section>
+
+      <section class="card">
+        <h2>Output</h2>
+        <div id="output" class="output-box">Your CV summary, application email, or job links will appear here.</div>
+        <div id="links" class="job-links"></div>
+        <div class="tip">
+          Best first version: use this as a lead tool. Later, add OpenAI API, PDF export, payment, and a customer dashboard.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const locationOptions = {
+      UK: {
+        'England - Birmingham': ['Birmingham', 'Coventry', 'Wolverhampton'],
+        'England - London': ['London', 'Croydon', 'Wembley'],
+        'England - Manchester': ['Manchester', 'Salford', 'Bolton'],
+        'England - Leeds': ['Leeds', 'Bradford', 'Wakefield'],
+        'England - Liverpool': ['Liverpool', 'Birkenhead', 'St Helens'],
+        'Scotland - Glasgow': ['Glasgow', 'Paisley', 'East Kilbride'],
+        'Scotland - Edinburgh': ['Edinburgh', 'Livingston', 'Musselburgh'],
+        'Wales - Cardiff': ['Cardiff', 'Newport', 'Swansea'],
+        'Northern Ireland - Belfast': ['Belfast', 'Lisburn', 'Newtownabbey']
+      },
+      India: {
+        'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur'],
+        'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad'],
+        'Karnataka': ['Bengaluru', 'Mysuru', 'Mangaluru'],
+        'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai'],
+        'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+        'Delhi': ['New Delhi', 'Dwarka', 'Rohini'],
+        'Kerala': ['Kochi', 'Thiruvananthapuram', 'Kozhikode'],
+        'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara'],
+        'West Bengal': ['Kolkata', 'Howrah', 'Durgapur'],
+        'Uttar Pradesh': ['Noida', 'Lucknow', 'Kanpur']
+      }
+    };
+
+    function updateStateOptions() {
+      const country = document.getElementById('country').value;
+      const locationSelect = document.getElementById('location');
+      const citySelect = document.getElementById('city');
+      const states = Object.keys(locationOptions[country] || {});
+
+      locationSelect.innerHTML = '';
+      states.forEach(place => {
+        const option = document.createElement('option');
+        option.value = place;
+        option.textContent = place;
+        locationSelect.appendChild(option);
+      });
+
+      citySelect.innerHTML = '';
+      updateCityOptions();
+      updatePhonePrefix();
+    }
+
+    function updateCityOptions() {
+      const country = document.getElementById('country').value;
+      const state = document.getElementById('location').value;
+      const citySelect = document.getElementById('city');
+      const cities = (locationOptions[country] && locationOptions[country][state]) || [];
+
+      citySelect.innerHTML = '';
+      cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+    }
+
+    function updatePhonePrefix() {
+      const country = document.getElementById('country').value;
+      const phoneInput = document.getElementById('phone');
+      const prefix = country === 'India' ? '+91 ' : '+44 ';
+      phoneInput.placeholder = prefix + 'Phone number';
+      if (!phoneInput.value.trim() || phoneInput.value === '+91 ' || phoneInput.value === '+44 ') {
+        phoneInput.value = prefix;
+      }
+    }
+
+    function getDetails() {
+      return {
+        fullName: document.getElementById('fullName').value.trim() || 'Your Name',
+        email: document.getElementById('email').value.trim() || 'your@email.com',
+        country: document.getElementById('country').value,
+        phone: document.getElementById('phone').value.trim() || (document.getElementById('country').value === 'India' ? '+91 ' : '+44 '),
+        location: document.getElementById('location').value.trim() || 'Location',
+        city: document.getElementById('city').value.trim() || 'City',
+        course: document.getElementById('course').value.trim() || 'Your Course',
+        jobType: document.getElementById('jobType').value,
+        experience: document.getElementById('experience').value.trim(),
+        availability: document.getElementById('availability').value.trim() || 'Flexible'
+      };
+    }
+
+    function clearLinks() {
+      document.getElementById('links').innerHTML = '';
+    }
+
+    function generateCV() {
+      const d = getDetails();
+      clearLinks();
+
+      const skillsByRole = {
+        'Warehouse Operative': [
+          'Strong work ethic and punctuality',
+          'Comfortable with fast-paced tasks',
+          'Teamwork and reliability',
+          'Able to handle manual responsibilities',
+          'Quick learner'
+        ],
+        'Retail Assistant': [
+          'Friendly communication',
+          'Customer service mindset',
+          'Cash-handling readiness',
+          'Teamwork and flexibility',
+          'Positive attitude'
+        ],
+        'Kitchen Assistant': [
+          'Able to work under pressure',
+          'Cleanliness and hygiene awareness',
+          'Team support in busy environments',
+          'Time management',
+          'Willingness to learn quickly'
+        ],
+        'HR Executive': [
+          'Communication and coordination',
+          'Basic recruitment support',
+          'Employee records awareness',
+          'Professional attitude',
+          'Confidentiality'
+        ],
+        'Business Analyst': [
+          'Requirement gathering',
+          'Problem solving',
+          'Stakeholder communication',
+          'Documentation skills',
+          'Analytical thinking'
+        ],
+        'Data Analyst': [
+          'Data cleaning and reporting',
+          'Excel and spreadsheet confidence',
+          'Analytical thinking',
+          'Attention to detail',
+          'Basic visualization skills'
+        ],
+        'Software Engineer': [
+          'Programming fundamentals',
+          'Debugging mindset',
+          'Team collaboration',
+          'Problem solving',
+          'Quick learning ability'
+        ],
+        'Project Manager': [
+          'Planning and coordination',
+          'Deadline tracking',
+          'Team communication',
+          'Risk awareness',
+          'Organizational skills'
+        ]
+      };
+
+      const detailsBlock = `${d.fullName}
+Phone: ${d.phone}
+Email: ${d.email}
+Location: ${d.city}, ${d.location}, ${d.country}`;
+      const intro = `PROFILE
+Motivated and reliable candidate currently studying ${d.course}. Seeking a ${d.jobType.toLowerCase()} role in ${d.country}. Available for ${d.availability.toLowerCase()}.`;
+      const middleSection = d.experience
+        ? `EXPERIENCE
+- ${d.experience}`
+        : `STRENGTHS
+- Quick learner and adaptable
+- Reliable and disciplined
+- Positive attitude and willingness to contribute`;
+
+      const profile = `${detailsBlock}
+
+${intro}
+
+KEY SKILLS
+- ${skillsByRole[d.jobType].join('\n- ')}
+
+EDUCATION
+- ${d.course}
+
+${middleSection}
+
+DECLARATION
+I hereby declare that the information provided above is true and correct to the best of my knowledge.
+
+${d.fullName}`;
+
+      document.getElementById('output').textContent = profile;
+    }
+
+    function generateEmail() {
+      const d = getDetails();
+      clearLinks();
+
+      const introLine = d.experience
+        ? `${d.experience} `
+        : '';
+
+      const emailText = `Subject: Application for ${d.jobType} Role
+
+Dear Hiring Manager,
+
+I hope you are well.
+
+I am writing to express my interest in the ${d.jobType} position. I am currently studying ${d.course} and I am looking for an opportunity to contribute to your team in ${d.country}.
+
+${introLine}I am reliable, quick to learn, and comfortable working in a team. I am available for ${d.availability.toLowerCase()} and can start as required.
+
+Please find my CV attached for your consideration.
+
+Thank you for your time.
+
+Kind regards,
+${d.fullName}
+${d.phone}
+${d.email}`;
+
+      document.getElementById('output').textContent = emailText;
+    }
+
+    function generateJobLinks() {
+      const d = getDetails();
+      const output = document.getElementById('output');
+      const links = document.getElementById('links');
+      links.innerHTML = '';
+
+      const locationText = d.location || (d.country === 'India' ? 'Telangana' : 'England - Birmingham');
+      const cityText = d.city || (d.country === 'India' ? 'Hyderabad' : 'Birmingham');
+      const encodedCity = encodeURIComponent(cityText);
+      const encodedRole = encodeURIComponent(d.jobType);
+      let jobs = [];
+
+      if (d.country === 'India') {
+        jobs = [
+          {
+            title: `${d.jobType} Jobs in ${cityText}`,
+            company: 'Indeed India',
+            location: `${cityText}, ${locationText}`,
+            desc: 'Current India job results for the selected role and city.',
+            url: `https://in.indeed.com/jobs?q=${encodedRole}&l=${encodedCity}`
+          },
+          {
+            title: `${d.jobType} Jobs in ${cityText}`,
+            company: 'LinkedIn Jobs',
+            location: `${cityText}, ${locationText}`,
+            desc: 'LinkedIn jobs filtered to your selected role and city.',
+            url: `https://www.linkedin.com/jobs/search/?keywords=${encodedRole}&location=${encodedCity}`
+          },
+          {
+            title: `${d.jobType} Jobs in ${cityText}`,
+            company: 'Naukri',
+            location: `${cityText}, ${locationText}`,
+            desc: 'Naukri search results for current openings in your selected city.',
+            url: `https://www.naukri.com/${encodedRole.replace(/%20/g,'-').toLowerCase()}-jobs-in-${encodedCity.replace(/%20/g,'-').toLowerCase()}`
+          }
+        ];
+      } else {
+        jobs = [
+          {
+            title: `${d.jobType} Jobs in ${cityText}`,
+            company: 'Indeed UK',
+            location: `${cityText}, ${locationText}`,
+            desc: 'Latest UK job listings for the selected role and city.',
+            url: `https://uk.indeed.com/jobs?q=${encodedRole}&l=${encodedCity}&sort=date`
+          },
+          {
+            title: `${d.jobType} Jobs in ${cityText}`,
+            company: 'LinkedIn Jobs',
+            location: `${cityText}, ${locationText}`,
+            desc: 'LinkedIn job search for the selected role and city.',
+            url: `https://www.linkedin.com/jobs/search/?keywords=${encodedRole}&location=${encodedCity}`
+          },
+          {
+            title: `${d.jobType} Jobs in ${cityText}`,
+            company: 'Reed',
+            location: `${cityText}, ${locationText}`,
+            desc: 'UK job board search for your selected role and city.',
+            url: `https://www.reed.co.uk/jobs/${encodedRole.replace(/%20/g,'-').toLowerCase()}-jobs-in-${encodedCity.replace(/%20/g,'-').toLowerCase()}`
+          }
+        ];
+      }
+
+      output.textContent = `Showing job links for ${d.jobType} in ${cityText}, ${locationText}, ${d.country}. Click Apply Now to open the job platform and continue the application.`;
+
+      jobs.forEach(job => {
+        const card = document.createElement('div');
+        card.className = 'job-link';
+
+        const title = document.createElement('strong');
+        title.textContent = job.title;
+
+        const meta = document.createElement('span');
+        meta.className = 'job-meta';
+        meta.textContent = `${job.company} • ${job.location}`;
+
+        const desc = document.createElement('span');
+        desc.className = 'job-desc';
+        desc.textContent = job.desc;
+
+        const urlText = document.createElement('span');
+        urlText.className = 'job-url';
+        urlText.textContent = job.url;
+
+        const actions = document.createElement('div');
+        actions.className = 'job-actions';
+
+        const applyBtn = document.createElement('button');
+        applyBtn.className = 'apply-tag';
+        applyBtn.type = 'button';
+        applyBtn.textContent = 'Apply Now';
+        applyBtn.onclick = () => {
+          window.open(job.url, '_blank', 'noopener,noreferrer');
+        };
+
+        const directLink = document.createElement('a');
+        directLink.className = 'plain-link';
+        directLink.href = job.url;
+        directLink.target = '_blank';
+        directLink.rel = 'noopener noreferrer';
+        directLink.textContent = 'Open direct link';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'secondary';
+        copyBtn.type = 'button';
+        copyBtn.textContent = 'Copy Link';
+        copyBtn.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(job.url);
+            copyBtn.textContent = 'Copied';
+            setTimeout(() => {
+              copyBtn.textContent = 'Copy Link';
+            }, 1500);
+          } catch (e) {
+            alert('Could not copy link. URL: ' + job.url);
+          }
+        };
+
+        actions.appendChild(applyBtn);
+        actions.appendChild(directLink);
+        actions.appendChild(copyBtn);
+
+        card.appendChild(title);
+        card.appendChild(meta);
+        card.appendChild(desc);
+        card.appendChild(urlText);
+        card.appendChild(actions);
+        links.appendChild(card);
+      });
+    }
+
+    updateStateOptions();
+    updatePhonePrefix();
+  </script>
+</body>
+</html>
