@@ -213,6 +213,14 @@
       box-shadow: 0 12px 28px rgba(15,23,42,0.06);
     }
 
+    .a4-preview {
+      width: 100%;
+      max-width: 794px;
+      min-height: 1123px;
+      margin: 0 auto;
+      background: #ffffff;
+    }
+
     .resume-head {
       border-bottom: 2px solid #dbeafe;
       padding-bottom: 14px;
@@ -331,6 +339,40 @@
       .grid { grid-template-columns: 1fr; }
       .field-grid { grid-template-columns: 1fr; }
       .hero h1 { font-size: 2rem; }
+      .a4-preview { min-height: auto; }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+      .hero, .card:first-child, .job-links, .tip {
+        display: none !important;
+      }
+      .grid {
+        display: block;
+      }
+      .card {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        background: #fff;
+      }
+      .a4-preview {
+        max-width: 100%;
+        min-height: auto;
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        padding: 0;
+      }
+      @page {
+        size: A4;
+        margin: 12mm;
+      }
+    }
+      .field-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
     }
   </style>
 </head>
@@ -433,12 +475,12 @@
           <button class="outline-btn" onclick="resetForm()">Reset Form</button>
         </div>
 
-        <p class="small">This website works directly in the browser. Payment, dashboard, and saved profiles are future features, so they are not buttons yet.</p>
+        <p class="small">Download PDF opens a print-friendly A4 version so the user can save it as a single-page PDF when possible. WhatsApp share uses the user's own share flow, not any fixed number.</p>
       </section>
 
       <section class="card">
         <h2>Resume / Output</h2>
-        <div id="output" class="resume-preview">
+        <div id="output" class="resume-preview a4-preview">
           <div class="resume-head">
             <h1 class="resume-name">Your Name</h1>
             <div class="resume-contact">Phone • Email • City, State, Country</div>
@@ -450,7 +492,7 @@
         </div>
         <div id="links" class="job-links"></div>
         <div class="tip">
-          Right now, Download PDF and WhatsApp Share are real working buttons. Payment, dashboard, and saved profiles are future upgrades.
+          Resume preview is now styled like an A4 page. Use Download PDF, then choose <strong>Save as PDF</strong> in the print window.
         </div>
       </section>
     </div>
@@ -676,18 +718,20 @@
         <head>
           <title>${escapeHtml(d.fullName)} CV</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 30px; color: #111827; }
-            .resume-head { border-bottom: 2px solid #dbeafe; padding-bottom: 14px; margin-bottom: 16px; }
-            .resume-name { font-size: 28px; font-weight: 700; margin: 0 0 6px; }
-            .resume-contact { color: #4b5563; font-size: 14px; }
-            .resume-section { margin-top: 18px; }
-            .resume-section h3 { margin: 0 0 8px; font-size: 15px; color: #1d4ed8; text-transform: uppercase; }
-            .resume-section p, .resume-section li { font-size: 14px; line-height: 1.6; }
-            ul { padding-left: 18px; }
+            @page { size: A4; margin: 10mm; }
+            body { font-family: Arial, sans-serif; padding: 0; color: #111827; background: #fff; }
+            .sheet { width: 190mm; min-height: 277mm; margin: 0 auto; }
+            .resume-head { border-bottom: 2px solid #dbeafe; padding-bottom: 12px; margin-bottom: 14px; }
+            .resume-name { font-size: 26px; font-weight: 700; margin: 0 0 6px; }
+            .resume-contact { color: #4b5563; font-size: 13px; }
+            .resume-section { margin-top: 14px; }
+            .resume-section h3 { margin: 0 0 6px; font-size: 14px; color: #1d4ed8; text-transform: uppercase; }
+            .resume-section p, .resume-section li { font-size: 13px; line-height: 1.45; margin: 0; }
+            ul { padding-left: 18px; margin: 0; }
           </style>
         </head>
         <body>
-          ${resumeHtml}
+          <div class="sheet">${resumeHtml}</div>
           <script>
             window.onload = function() { window.print(); };
           <\/script>
@@ -697,11 +741,30 @@
       pdfWindow.document.close();
     }
 
-    function shareWhatsApp() {
+    async function shareWhatsApp() {
       const d = getDetails();
-      const phoneNumber = '447721320114';
-      const message = `Hi Shashi, I used Smart Apply Assistant.%0A%0AName: ${encodeURIComponent(d.fullName)}%0ARole: ${encodeURIComponent(d.jobType)}%0ACity: ${encodeURIComponent(d.city)}%0AEmail: ${encodeURIComponent(d.email)}`;
-      window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+      const resumeText = `${d.fullName}
+${d.phone}
+${d.email}
+${d.city}, ${d.location}, ${d.country}`;
+      const message = `Smart Apply Assistant CV
+
+${resumeText}`;
+
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: `${d.fullName} CV`,
+            text: message
+          });
+          return;
+        }
+      } catch (e) {
+        // fall through
+      }
+
+      const waText = encodeURIComponent(message);
+      window.open(`https://wa.me/?text=${waText}`, '_blank');
     }
 
     function resetForm() {
